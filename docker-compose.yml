@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: python-orm-practice-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: orm_user
+      POSTGRES_PASSWORD: orm_pass
+      POSTGRES_DB: orm_practice_admin
+    ports:
+      - "55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orm_user -d orm_practice_admin"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  postgres_data:
